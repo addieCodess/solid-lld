@@ -1,5 +1,16 @@
 public abstract class NotificationSender {
+
     protected final AuditLog audit;
-    protected NotificationSender(AuditLog audit) { this.audit = audit; }
-    public abstract void send(Notification n);
+    private final NotificationPreprocessor prep = new NotificationPreprocessor();
+
+    protected NotificationSender(AuditLog audit) {
+        this.audit = audit;
+    }
+
+    public final void send(Notification n) {
+        Notification clean = prep.normalize(n);
+        deliver(clean);
+    }
+
+    protected abstract void deliver(Notification n);
 }
